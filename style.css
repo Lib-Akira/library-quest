@@ -238,8 +238,88 @@ body{
 .feedback--correct{ background: var(--green-bg); color:#1F6B45; }
 .feedback--wrong{ background: var(--coral-bg); color:#9C3325; }
 
+/* ---- Game-feel effects ---- */
+.card--quiz{ position:relative; }
+.card--quiz::after{
+  content:"";
+  position:absolute; inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  opacity:0;
+}
+.card--quiz.flash-correct::after{ background: rgba(79,169,122,0.16); animation: flashPulse .5s ease; }
+.card--quiz.flash-wrong::after{ background: rgba(226,96,79,0.16); animation: flashPulse .5s ease; }
+@keyframes flashPulse{
+  0%{ opacity:0; }
+  25%{ opacity:1; }
+  100%{ opacity:0; }
+}
+.card--quiz.shake{ animation: shakeX .4s ease; }
+@keyframes shakeX{
+  0%, 100%{ transform: translateX(0); }
+  20%{ transform: translateX(-7px); }
+  40%{ transform: translateX(6px); }
+  60%{ transform: translateX(-4px); }
+  80%{ transform: translateX(3px); }
+}
+
+.answer--pop{ animation: answerPop .4s ease; }
+@keyframes answerPop{
+  0%{ transform: scale(1); }
+  45%{ transform: scale(1.045); }
+  100%{ transform: scale(1); }
+}
+
+.answer__mark{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:20px; height:20px; border-radius:50%; flex-shrink:0;
+  font-size:12px; font-weight:700; color:#fff;
+  animation: markPop .3s ease;
+}
+.answer__mark--correct{ background: var(--green); }
+.answer__mark--wrong{ background: var(--coral); }
+@keyframes markPop{
+  0%{ transform: scale(0); opacity:0; }
+  60%{ transform: scale(1.2); opacity:1; }
+  100%{ transform: scale(1); }
+}
+
+.score-float{
+  position:absolute;
+  right:2px;
+  top:-6px;
+  font-family:'Kanit',sans-serif;
+  font-weight:700;
+  font-size:15px;
+  color: var(--green);
+  pointer-events:none;
+  animation: scoreFloat 0.9s ease forwards;
+}
+@keyframes scoreFloat{
+  0%{ transform: translateY(0); opacity:0; }
+  20%{ opacity:1; }
+  100%{ transform: translateY(-26px); opacity:0; }
+}
+
+.hud__progress{ position:relative; }
+
+/* Confetti burst on Mission Complete */
+.confetti{
+  position:absolute;
+  top:-10px; left:50%;
+  width:8px; height:14px;
+  margin-left:-4px;
+  border-radius:2px;
+  opacity:0;
+  animation: confettiFall 1.4s ease-out forwards;
+}
+@keyframes confettiFall{
+  0%{ transform: translate(0,0) rotate(0deg); opacity:1; }
+  100%{ transform: translate(var(--dx,40px), 130px) rotate(var(--rot,220deg)); opacity:0; }
+}
+
 /* Complete screen */
-.badge-wrap{ position:relative; padding-top:6px; margin-bottom:6px; z-index:1; }
+.badge-wrap{ position:relative; padding-top:6px; margin-bottom:6px; z-index:1; overflow:visible; }
 .badge-shine{
   position:absolute; top:-16px; left:50%; transform:translateX(-50%);
   width:160px; height:160px;
