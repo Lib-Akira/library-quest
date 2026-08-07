@@ -206,28 +206,40 @@ document.getElementById('btn-save').addEventListener('click', () => {
   const btn = document.getElementById('btn-save');
   const target = document.getElementById('screen-complete');
 
-  if(typeof html2canvas === 'undefined'){
-    alert('ไม่สามารถโหลดตัวช่วยบันทึกภาพได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ตแล้วลองใหม่');
-    return;
+  function waitForHtml2Canvas(retriesLeft){
+    if(typeof html2canvas !== 'undefined'){
+      captureAndDownload();
+      return;
+    }
+    if(retriesLeft <= 0){
+      alert('ไม่สามารถโหลดตัวช่วยบันทึกภาพได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ตแล้วลองใหม่');
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+      return;
+    }
+    setTimeout(() => waitForHtml2Canvas(retriesLeft - 1), 200);
+  }
+
+  function captureAndDownload(){
+    html2canvas(target, {
+      backgroundColor: '#EAF3FB',
+      scale: 2,
+      useCORS: true
+    }).then((canvas) => {
+      const link = document.createElement('a');
+      link.download = 'library-quest-mission-complete.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }).catch(() => {
+      alert('บันทึกภาพไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+    }).finally(() => {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    });
   }
 
   const originalLabel = btn.textContent;
   btn.disabled = true;
   btn.textContent = 'กำลังบันทึก...';
-
-  html2canvas(target, {
-    backgroundColor: '#EAF3FB',
-    scale: 2,
-    useCORS: true
-  }).then((canvas) => {
-    const link = document.createElement('a');
-    link.download = 'library-quest-mission-complete.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  }).catch(() => {
-    alert('บันทึกภาพไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
-  }).finally(() => {
-    btn.disabled = false;
-    btn.textContent = originalLabel;
-  });
+  waitForHtml2Canvas(15); // retry for up to ~3 seconds
 });
