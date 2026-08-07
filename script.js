@@ -202,13 +202,32 @@ function endQuest(success){
 document.getElementById('btn-start').addEventListener('click', startQuest);
 document.getElementById('btn-retry').addEventListener('click', startQuest);
 document.getElementById('btn-home').addEventListener('click', () => showScreen('start'));
-document.getElementById('btn-share').addEventListener('click', () => {
-  const text = 'ฉันพิชิตภารกิจ Library Quest สำเร็จแล้ว! ไปรับของรางวัลที่เคาน์เตอร์ห้องสมุดกันเถอะ';
-  if(navigator.share){
-    navigator.share({ text }).catch(() => {});
-  } else {
-    navigator.clipboard.writeText(text).then(() => {
-      alert('คัดลอกข้อความความสำเร็จแล้ว พร้อมแชร์ต่อได้เลย');
-    });
+document.getElementById('btn-save').addEventListener('click', () => {
+  const btn = document.getElementById('btn-save');
+  const target = document.getElementById('screen-complete');
+
+  if(typeof html2canvas === 'undefined'){
+    alert('ไม่สามารถโหลดตัวช่วยบันทึกภาพได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ตแล้วลองใหม่');
+    return;
   }
+
+  const originalLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'กำลังบันทึก...';
+
+  html2canvas(target, {
+    backgroundColor: '#EAF3FB',
+    scale: 2,
+    useCORS: true
+  }).then((canvas) => {
+    const link = document.createElement('a');
+    link.download = 'library-quest-mission-complete.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }).catch(() => {
+    alert('บันทึกภาพไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+  }).finally(() => {
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+  });
 });
