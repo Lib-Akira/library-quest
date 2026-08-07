@@ -1,0 +1,171 @@
+// ==========================================================================
+// Library Quest — game logic
+// กติกา: หัวใจเริ่มต้น 3 ดวง / ตอบผิด -1 ดวง / หัวใจหมด = จบภารกิจ (เริ่มใหม่ได้ไม่จำกัด)
+// ตอบครบทุกข้อโดยหัวใจไม่หมด = ผ่านภารกิจ ได้รับรหัสของรางวัล
+// ==========================================================================
+
+const MAX_LIVES = 3;
+
+const screens = {
+  start: document.getElementById('screen-start'),
+  quiz: document.getElementById('screen-quiz'),
+  over: document.getElementById('screen-over'),
+  complete: document.getElementById('screen-complete'),
+};
+
+let state = {
+  order: [],
+  index: 0,
+  lives: MAX_LIVES,
+  correctCount: 0,
+  locked: false,
+};
+
+function showScreen(name){
+  Object.values(screens).forEach(s => s.hidden = true);
+  screens[name].hidden = false;
+}
+
+function shuffledIndices(n){
+  const arr = Array.from({length: n}, (_, i) => i);
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function startQuest(){
+  state = {
+    order: shuffledIndices(QUESTIONS.length),
+    index: 0,
+    lives: MAX_LIVES,
+    correctCount: 0,
+    locked: false,
+  };
+  renderHearts();
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function renderHearts(){
+  const el = document.getElementById('hearts');
+  el.innerHTML = '';
+  for(let i = 0; i < MAX_LIVES; i++){
+    const span = document.createElement('span');
+    span.className = 'heart' + (i >= state.lives ? ' heart--lost' : '');
+    span.textContent = '\u2764\uFE0F';
+    span.setAttribute('aria-hidden', 'true');
+    el.appendChild(span);
+  }
+}
+
+function loseHeart(){
+  state.lives--;
+  const hearts = document.querySelectorAll('#hearts .heart');
+  const target = hearts[state.lives];
+  if(target){
+    target.classList.add('heart--breaking');
+    setTimeout(() => renderHearts(), 420);
+  } else {
+    renderHearts();
+  }
+}
+
+function renderQuestion(){
+  state.locked = false;
+  const total = state.order.length;
+  const qIndex = state.order[state.index];
+  const q = QUESTIONS[qIndex];
+
+  document.getElementById('progress-label').textContent = `Progress: ${state.index + 1}/${total}`;
+  document.getElementById('progress-fill').style.width = `${(state.index / total) * 100}%`;
+  document.getElementById('question-num').textContent = `ข้อที่ ${state.index + 1}`;
+  document.getElementById('question-text').textContent = q.text;
+
+  const letters = ['A', 'B', 'C', 'D'];
+  const answersEl = document.getElementById('answers');
+  answersEl.innerHTML = '';
+  q.choices.forEach((choice, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'answer';
+    btn.innerHTML = `<span class="answer__letter">${letters[i]}</span><span>${choice}</span>`;
+    btn.addEventListener('click', () => handleAnswer(i, q.answer, btn));
+    answersEl.appendChild(btn);
+  });
+
+  const feedback = document.getElementById('feedback');
+  feedback.hidden = true;
+  feedback.className = 'feedback';
+}
+
+function handleAnswer(chosenIndex, correctIndex, btnEl){
+  if(state.locked) return;
+  state.locked = true;
+
+  const buttons = document.querySelectorAll('#answers .answer');
+  const isCorrect = chosenIndex === correctIndex;
+
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if(i === correctIndex){
+      b.classList.add('answer--correct');
+    } else if(i === chosenIndex && !isCorrect){
+      b.classList.add('answer--wrong');
+    } else {
+      b.classList.add('answer--dim');
+    }
+  });
+
+  const feedback = document.getElementById('feedback');
+  const feedbackText = document.getElementById('feedback-text');
+  feedback.hidden = false;
+
+  if(isCorrect){
+    state.correctCount++;
+    feedback.classList.add('feedback--correct');
+    feedbackText.textContent = 'ถูกต้อง! เยี่ยมมาก';
+  } else {
+    feedback.classList.add('feedback--wrong');
+    feedbackText.textContent = 'ตอบผิด เสียหัวใจไป 1 ดวง';
+    loseHeart();
+  }
+
+  setTimeout(() => {
+    if(state.lives <= 0){
+      endQuest(false);
+      return;
+    }
+    state.index++;
+    if(state.index >= state.order.length){
+      endQuest(true);
+    } else {
+      renderQuestion();
+    }
+  }, 1100);
+}
+
+function endQuest(success){
+  if(success){
+    document.getElementById('progress-fill').style.width = '100%';
+    showScreen('complete');
+  } else {
+    document.getElementById('over-score').textContent = state.correctCount;
+    document.getElementById('over-total').textContent = state.order.length;
+    showScreen('over');
+  }
+}
+
+document.getElementById('btn-start').addEventListener('click', startQuest);
+document.getElementById('btn-retry').addEventListener('click', startQuest);
+document.getElementById('btn-home').addEventListener('click', () => showScreen('start'));
+document.getElementById('btn-share').addEventListener('click', () => {
+  const text = 'ฉันพิชิตภารกิจ Library Quest สำเร็จแล้ว! ไปรับของรางวัลที่เคาน์เตอร์ห้องสมุดกันเถอะ';
+  if(navigator.share){
+    navigator.share({ text }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(text).then(() => {
+      alert('คัดลอกข้อความความสำเร็จแล้ว พร้อมแชร์ต่อได้เลย');
+    });
+  }
+});

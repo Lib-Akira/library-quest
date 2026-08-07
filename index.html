@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Library Quest: ภารกิจพิชิตห้องสมุด</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="stage">
+
+  <header class="quest-title">
+    <span class="quest-title__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="30" height="30"><path d="M3 5.5C3 4.7 3.7 4 4.5 4H11v16H4.5C3.7 20 3 19.3 3 18.5V5.5Z" fill="#F0973B"/><path d="M21 5.5C21 4.7 20.3 4 19.5 4H13v16h6.5c.8 0 1.5-.7 1.5-1.5V5.5Z" fill="#3E8EDE"/></svg>
+    </span>
+    Library Quest: ภารกิจพิชิตห้องสมุด
+  </header>
+
+  <!-- ============ SCREEN 1: START ============ -->
+  <section class="card" id="screen-start" data-screen>
+    <div class="mascot" id="mascot-start" aria-hidden="true"></div>
+    <h1 class="headline">Library Quest</h1>
+    <p class="subtext">ตอบคำถามให้ถูกต้อง<br>เพื่อเป็นสุดยอดนักอ่านของ<strong>ห้องสมุด</strong>!</p>
+
+    <div class="rules-box">
+      <p class="rules-box__title">กติกาการร่วมสนุก</p>
+      <ul class="rules-list">
+        <li><i class="rule-dot"></i>เริ่มต้นด้วยหัวใจ 3 ดวง</li>
+        <li><i class="rule-dot"></i>ตอบผิด 1 ข้อ หักหัวใจ 1 ดวง</li>
+        <li><i class="rule-dot"></i>หัวใจหมด = จบภารกิจรอบนั้น เริ่มใหม่ได้ทันที</li>
+        <li><i class="rule-dot"></i>ตอบครบทุกข้อโดยหัวใจไม่หมด รับของรางวัลได้ที่เคาน์เตอร์ห้องสมุด</li>
+      </ul>
+    </div>
+
+    <button class="btn btn--primary btn--lg" id="btn-start">เริ่มภารกิจ</button>
+  </section>
+
+  <!-- ============ SCREEN 2: QUIZ ============ -->
+  <section class="card card--quiz" id="screen-quiz" data-screen hidden>
+    <div class="hud">
+      <div class="hud__progress">
+        <span class="hud__label" id="progress-label">Progress: 1/10</span>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      </div>
+      <div class="hud__life">
+        <span class="hud__label">Life Bar</span>
+        <div class="hearts" id="hearts" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <div class="question-box">
+      <p class="question-num" id="question-num">ข้อที่ 1</p>
+      <p class="question-text" id="question-text"></p>
+    </div>
+
+    <div class="answers" id="answers"></div>
+
+    <div class="feedback" id="feedback" hidden>
+      <span id="feedback-text"></span>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 3: GAME OVER ============ -->
+  <section class="card" id="screen-over" data-screen hidden>
+    <div class="mascot mascot--sad" aria-hidden="true"></div>
+    <h1 class="headline headline--over">หัวใจหมดแล้ว!</h1>
+    <p class="subtext">ไม่เป็นไร ทบทวนความรู้แล้วลองใหม่อีกครั้งได้เลย<br>ไม่จำกัดจำนวนครั้ง</p>
+    <div class="stat-pill">ตอบถูก <span id="over-score">0</span> จาก <span id="over-total">10</span> ข้อ</div>
+    <button class="btn btn--primary btn--lg" id="btn-retry">ลองใหม่อีกครั้ง</button>
+  </section>
+
+  <!-- ============ SCREEN 4: COMPLETE ============ -->
+  <section class="card" id="screen-complete" data-screen hidden>
+    <div class="badge-wrap">
+      <div class="badge-shine" aria-hidden="true"></div>
+      <div class="mascot mascot--happy" aria-hidden="true"></div>
+      <p class="badge-tag">Mission Complete!</p>
+    </div>
+    <h1 class="headline">ยินดีด้วย!</h1>
+    <p class="subtext">คุณคือผู้พิชิตห้องสมุดตัวจริง</p>
+
+    <div class="reward-box">
+      <p class="reward-box__label">ขั้นตอนต่อไป</p>
+      <p class="reward-box__msg">กรุณามารับของรางวัลได้ที่เคาน์เตอร์ห้องสมุด</p>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn--secondary" id="btn-home">กลับหน้าหลัก</button>
+      <button class="btn btn--secondary" id="btn-share">แชร์ความสำเร็จ</button>
+    </div>
+  </section>
+
+</div>
+
+<script src="questions.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
