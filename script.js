@@ -105,13 +105,23 @@ function handleAnswer(chosenIndex, correctIndex, btnEl){
 
   const buttons = document.querySelectorAll('#answers .answer');
   const isCorrect = chosenIndex === correctIndex;
+  const quizCard = document.getElementById('screen-quiz');
 
   buttons.forEach((b, i) => {
     b.disabled = true;
     if(i === correctIndex){
       b.classList.add('answer--correct');
+      const mark = document.createElement('span');
+      mark.className = 'answer__mark answer__mark--correct';
+      mark.textContent = '\u2713';
+      b.appendChild(mark);
+      if(isCorrect) b.classList.add('answer--pop');
     } else if(i === chosenIndex && !isCorrect){
       b.classList.add('answer--wrong');
+      const mark = document.createElement('span');
+      mark.className = 'answer__mark answer__mark--wrong';
+      mark.textContent = '\u2717';
+      b.appendChild(mark);
     } else {
       b.classList.add('answer--dim');
     }
@@ -121,13 +131,19 @@ function handleAnswer(chosenIndex, correctIndex, btnEl){
   const feedbackText = document.getElementById('feedback-text');
   feedback.hidden = false;
 
+  quizCard.classList.remove('flash-correct', 'flash-wrong', 'shake');
+  void quizCard.offsetWidth; // restart animation
+
   if(isCorrect){
     state.correctCount++;
     feedback.classList.add('feedback--correct');
     feedbackText.textContent = 'ถูกต้อง! เยี่ยมมาก';
+    quizCard.classList.add('flash-correct');
+    showScoreFloat();
   } else {
     feedback.classList.add('feedback--wrong');
     feedbackText.textContent = 'ตอบผิด เสียหัวใจไป 1 ดวง';
+    quizCard.classList.add('flash-wrong', 'shake');
     loseHeart();
   }
 
@@ -145,10 +161,36 @@ function handleAnswer(chosenIndex, correctIndex, btnEl){
   }, 1100);
 }
 
+function showScoreFloat(){
+  const holder = document.querySelector('.hud__progress');
+  const el = document.createElement('span');
+  el.className = 'score-float';
+  el.textContent = '+1';
+  holder.appendChild(el);
+  setTimeout(() => el.remove(), 950);
+}
+
+function launchConfetti(){
+  const colors = ['#F0973B', '#3E8EDE', '#4FA97A', '#F5C24C', '#E2604F'];
+  const wrap = document.querySelector('.badge-wrap');
+  for(let i = 0; i < 18; i++){
+    const piece = document.createElement('span');
+    piece.className = 'confetti';
+    piece.style.background = colors[i % colors.length];
+    piece.style.setProperty('--dx', `${Math.round((Math.random() - 0.5) * 200)}px`);
+    piece.style.setProperty('--rot', `${Math.round(Math.random() * 360 + 180)}deg`);
+    piece.style.left = `${45 + Math.random() * 10}%`;
+    piece.style.animationDelay = `${(Math.random() * 0.3).toFixed(2)}s`;
+    wrap.appendChild(piece);
+    setTimeout(() => piece.remove(), 1800);
+  }
+}
+
 function endQuest(success){
   if(success){
     document.getElementById('progress-fill').style.width = '100%';
     showScreen('complete');
+    launchConfetti();
   } else {
     document.getElementById('over-score').textContent = state.correctCount;
     document.getElementById('over-total').textContent = state.order.length;
