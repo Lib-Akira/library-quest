@@ -109,19 +109,20 @@ function handleAnswer(chosenIndex, correctIndex, btnEl){
 
   buttons.forEach((b, i) => {
     b.disabled = true;
-    if(i === correctIndex){
-      b.classList.add('answer--correct');
-      const mark = document.createElement('span');
-      mark.className = 'answer__mark answer__mark--correct';
-      mark.textContent = '\u2713';
-      b.appendChild(mark);
-      if(isCorrect) b.classList.add('answer--pop');
-    } else if(i === chosenIndex && !isCorrect){
-      b.classList.add('answer--wrong');
-      const mark = document.createElement('span');
-      mark.className = 'answer__mark answer__mark--wrong';
-      mark.textContent = '\u2717';
-      b.appendChild(mark);
+    if(i === chosenIndex){
+      if(isCorrect){
+        b.classList.add('answer--correct', 'answer--pop');
+        const mark = document.createElement('span');
+        mark.className = 'answer__mark answer__mark--correct';
+        mark.textContent = '\u2713';
+        b.appendChild(mark);
+      } else {
+        b.classList.add('answer--wrong');
+        const mark = document.createElement('span');
+        mark.className = 'answer__mark answer__mark--wrong';
+        mark.textContent = '\u2717';
+        b.appendChild(mark);
+      }
     } else {
       b.classList.add('answer--dim');
     }
