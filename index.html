@@ -132,7 +132,10 @@
     </div>
     <h1 class="headline headline--over">หัวใจหมดแล้ว!</h1>
     <p class="subtext">ไม่เป็นไร ลองใหม่อีกครั้ง<br>ไม่จำกัดจำนวนครั้ง</p>
-    <div class="stat-pill">ตอบถูก <span id="over-score">0</span> จาก <span id="over-total">10</span> ข้อ</div>
+    <div class="result-summary">
+      <p class="result-summary__score"><span id="over-score">0</span> / <span id="over-total">10</span> คะแนน</p>
+      <div class="result-summary__hearts" id="over-hearts" aria-hidden="true"></div>
+    </div>
     <button class="btn btn--primary btn--lg" id="btn-retry">ลองใหม่อีกครั้ง</button>
   </section>
 
@@ -176,6 +179,11 @@
     </div>
     <h1 class="headline">ยินดีด้วย!</h1>
     <p class="subtext">คุณคือผู้พิชิตห้องสมุดตัวจริง</p>
+
+    <div class="result-summary">
+      <p class="result-summary__score"><span id="complete-score">10</span> / <span id="complete-total">10</span> คะแนน</p>
+      <div class="result-summary__hearts" id="complete-hearts" aria-hidden="true"></div>
+    </div>
 
     <div class="reward-box">
       <p class="reward-box__label">ขั้นตอนต่อไป</p>
