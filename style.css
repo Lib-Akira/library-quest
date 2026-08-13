@@ -347,12 +347,29 @@ body{
   color: var(--navy); margin:0; line-height:1.5;
 }
 
-.stat-pill{
-  display:inline-block;
+.result-summary{
+  display:inline-flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
   background:#F3F9FF; border:1px solid var(--border);
-  border-radius:999px; padding:8px 18px;
-  font-size:13.5px; color:var(--navy); font-weight:500;
+  border-radius: var(--radius-md); padding:14px 24px;
   margin-bottom:22px;
+}
+.result-summary__score{
+  font-family:'Kanit',sans-serif;
+  font-weight:700;
+  font-size:22px;
+  color: var(--navy);
+  margin:0;
+}
+.result-summary__hearts{
+  display:flex;
+  gap:5px;
+}
+.result-summary__hearts .heart-icon{
+  font-size:19px;
+  line-height:1;
 }
 
 @media (max-width: 380px){
