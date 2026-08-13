@@ -60,6 +60,18 @@ function renderHearts(){
   }
 }
 
+function renderHeartsInto(containerId, livesRemaining){
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML = '';
+  for(let i = 0; i < MAX_LIVES; i++){
+    const span = document.createElement('span');
+    span.className = 'heart-icon';
+    span.textContent = i < livesRemaining ? '\u2764\uFE0F' : '\u{1F90D}';
+    el.appendChild(span);
+  }
+}
+
 function loseHeart(){
   state.lives--;
   const hearts = document.querySelectorAll('#hearts .heart');
@@ -190,11 +202,15 @@ function launchConfetti(){
 function endQuest(success){
   if(success){
     document.getElementById('progress-fill').style.width = '100%';
+    document.getElementById('complete-score').textContent = state.correctCount;
+    document.getElementById('complete-total').textContent = state.order.length;
+    renderHeartsInto('complete-hearts', state.lives);
     showScreen('complete');
     launchConfetti();
   } else {
     document.getElementById('over-score').textContent = state.correctCount;
     document.getElementById('over-total').textContent = state.order.length;
+    renderHeartsInto('over-hearts', 0);
     showScreen('over');
   }
 }
